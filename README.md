@@ -26,7 +26,6 @@ Running acdbackup with out any switches will print out the online help.  Anyone 
 Creating a backup a backup of the test directory requires the -c switch.  -z enables compression and -v enables verbosity.
 For example:
 ```
-acdbackup -c -z -v test
 $ acdbackup -c -z -v test
 drwxr-xr-x             306 test
 drwxr-xr-x             136 test/a
@@ -53,7 +52,6 @@ backup complete: 20151017.100837
 Extracting the freshly made backup to the directory moo is as follows:
 ```
 acdbackup -x -p -C moo -f 20151017.100837
- acdbackup -x -C moo -f 20151017.100837
 drwxr-xr-x               0 test
 drwxr-xr-x               0 test/a
 drwxr-xr-x               0 test/a/aaa
@@ -73,7 +71,7 @@ drwxr-xr-x               0 test/ccc
 drwxr-xr-x               0 test/ccc/inc
 ```
 
--C ios the target directory and -p restores original permissions and ownership.
+-C is the target directory and -p restores original permissions and ownership.
 
 ### To Do
 
