@@ -820,7 +820,6 @@ func _main() error {
 		return fmt.Errorf("must specify only -c, -x or -t")
 	}
 
-	return nil
 }
 
 func main() {
