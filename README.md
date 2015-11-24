@@ -1,6 +1,6 @@
 # Amazon Cloud Drive Backup - acdb
 
-This repo contains the building blocks and a simple tar like tool to create deduplicated backups on Amazon Cloud Drive.
+This repo contains the building blocks and a simple tar like tool to create encrypted and deduplicated backups on Amazon Cloud Drive.
 
 The repo has the following pieces:
   - acd - Amazon Cloud Drive REST API implementation
@@ -95,6 +95,26 @@ drwxr-xr-x               0 test/ccc/inc
 ```
 
 -C is the target directory and -p restores original permissions and ownership.
+
+### acdbackup at a glance
+
+acdbackup uses a very simple algorithm to achieve encrypted and deduplicated backups.  The first thing to note is that acdbackup uses three distinct cryptographic keys.
+ 1. Deduplication key, used to calculate deduplication collisions
+ 1. Data Encryption key, used to encrypt physical files
+ 1. Metadata key, used to encrypt resulting backup metadata
+
+The backup process is as follows.
+ 1. Open file
+    1. Open file and calculate HMAC-SHA256 digest using deduplication key
+    1. Determine if digest exists in the data directory on Amazon Cloud Drive; if it exists skip compress, encrypt and upload phases
+    1. Compress file if MIME type is not marked as incompressible
+    1. Encrypt (compressed) file using encryption key
+    1. Upload encrypted file to the data directory on Amazon Cloud Drive
+ 2. Record file digest and permissions, etc. in backup metadata file
+
+Once the backup completes the backup metadata is encrypted using the metadata key and uploaded to the metadata directory on Amazon Cloud Drive.
+
+Extracting a backup is essentially the reversal of the process.
 
 ### To Do
 
