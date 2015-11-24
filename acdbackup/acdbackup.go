@@ -454,6 +454,12 @@ func (a *acdb) list() error {
 	f, err := os.Open(a.target)
 	if err != nil {
 		// not localy so try cloud drive
+		err := a.online()
+		if err != nil {
+			return err
+		}
+
+		// get metadata
 		md, err := a.downloadMD(a.target)
 		if err != nil {
 			return err
@@ -828,7 +834,7 @@ func _main() error {
 		a.mode = modeCreate
 
 		if len(args) == 0 {
-			fmt.Printf("acdbackup <-c> [-vzf target] filenames...\n")
+			fmt.Printf("acdbackup <-c>|<-x>|<-t>|<-T> [-vzf target] filenames...\n")
 			flag.PrintDefaults()
 			return nil
 		}
