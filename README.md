@@ -13,11 +13,11 @@ The repo has the following pieces:
 In order to get this working one must sign up for an Amazon Cloud Drive account.  Furthermore one must create Amazon Cloud Drive credentials.  See the credentials section for more information.
 
 ### Installing the pieces
+
+Install acdbackup utility and all dependencies:
 ```
 go get github.com/marcopeereboom/acdb/acdbackup
 ```
-
-Installs the acdbackup utility and all dependencies.
 
 Next up we need to download the Amazon Cloud Drive oAuth credentials (do read the caveat at the bottom of this readme).
 Go to https://go-acd.appspot.com and click on "Download my credentials as acd-token.json".
