@@ -591,6 +591,39 @@ func (a *acdb) list() error {
 	return nil
 }
 
+// listRemote display all files in the metadata directory.
+func (a *acdb) listRemote() error {
+	err := a.online()
+	if err != nil {
+		return err
+	}
+
+	mdID := a.metadataID
+	for {
+		children, err := a.c.GetChildrenJSON(mdID, "")
+		if err != nil {
+			return err
+		}
+
+		for _, v := range children.Data {
+			if v.Kind != acd.AssetFile {
+				continue
+			}
+			fmt.Printf("%13v  %v  %v\n",
+				v.ContentProperties.Size,
+				v.ModifiedDate.Format("Mon 02 Jan 2006 15:04:05"),
+				v.Name)
+		}
+
+		if children.NextToken == "" {
+			break
+		}
+		mdID = children.NextToken
+	}
+
+	return nil
+}
+
 // uploadSecrets encrypts and uploads the secrets to acd for safe keeping.
 func (a *acdb) uploadSecrets() error {
 	a.Log(acd.DebugTrace, "[TRC] uploadSecrets")
@@ -721,6 +754,7 @@ func _main() error {
 	create := flag.Bool("c", false, "create archive") // default *is* true
 	extract := flag.Bool("x", false, "extract archive")
 	lst := flag.Bool("t", false, "list archive contents")
+	lstRemote := flag.Bool("T", false, "list remote metadata content")
 	verbose := flag.Bool("v", false, "verbose")
 	compress := flag.Bool("z", false, "enable compression (default false)")
 	perms := flag.Bool("p", false, "restore ACL")
@@ -783,13 +817,14 @@ func _main() error {
 	defer a.Log(debugApp, "[APP] end of times")
 
 	// default to create
-	if *create == false && *extract == false && *lst == false {
+	if *create == false && *extract == false && *lst == false &&
+		*lstRemote == false {
 		*create = true
 	}
 
 	// determine operation
 	switch {
-	case *create && !(*extract || *lst):
+	case *create && !(*extract || *lst || *lstRemote):
 		a.mode = modeCreate
 
 		if len(args) == 0 {
@@ -800,7 +835,7 @@ func _main() error {
 
 		return a.archive(args)
 
-	case *extract && !(*create || *lst):
+	case *extract && !(*create || *lst || *lstRemote):
 		a.mode = modeExtract
 
 		if a.target == "-" {
@@ -816,8 +851,11 @@ func _main() error {
 		}
 		return a.list()
 
+	case *lstRemote && !(*create || *extract || *lst):
+		return a.listRemote()
+
 	default:
-		return fmt.Errorf("must specify only -c, -x or -t")
+		return fmt.Errorf("must specify only -c, -x, -t or -T")
 	}
 
 	return nil
