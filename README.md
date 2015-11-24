@@ -14,10 +14,33 @@ In order to get this working one must sign up for an Amazon Cloud Drive account.
 
 ### Installing the pieces
 ```
-go get github.com/marcopeereboom/acdb
+go get github.com/marcopeereboom/acdb/acdbackup
 ```
 
-Now simply launch acdbackup which at this point will detect that it is the first time being run and will generate new keys and ask for a password to encrypt those keys.  The keys are encrypted and uploaded to the cloud for safe keeping.  Do not lose your password!  It can NOT be recovered
+Installs the acdbackup utility and all dependencies.
+
+Next up we need to download the Amazon Cloud Drive oAuth credentials (do read the caveat at the bottom of this readme).
+Go to https://go-acd.appspot.com and click on "Download my credentials as acd-token.json".
+Note that this site will redirect you to amazon.com and will ask you to login; this is expected.
+
+Create the .acdbackup directory in your home directory and copy acd-token.json to it.  E.g.
+```
+$ mkdir ~/.acdbackup
+$ cp ~/Downloads/acd-token.json ~/.acdbackup/
+```
+
+Now launch acdbackup with the -T option (list remote metadata) which at this point will detect that it is the first time being run and will generate new keys and ask for a password to encrypt those keys.  The keys are encrypted and uploaded to the cloud for safe keeping.  Do not lose your password!  It can NOT be recovered
+
+For example:
+```
+$ acdbackup -T
+Cloud Drive does not have a copy of the secrets.  Please enter the password to encrypt the secrets.  Loss of this password is unrecoverable!
+Password:
+Again   :
+$ acdbackup -T
+          168  Tue 24 Nov 2015 14:31:18  secrets
+$
+```
 
 Running acdbackup with out any switches will print out the online help.  Anyone familiar with tar should be able to run this tool pretty easily.  The big difference being that data and metadata end up on the cloud.
 
