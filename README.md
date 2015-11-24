@@ -98,12 +98,14 @@ drwxr-xr-x               0 test/ccc/inc
 
 ### acdbackup at a glance
 
-acdbackup uses a very simple algorithm to achieve encrypted and deduplicated backups.  The first thing to note is that acdbackup uses three distinct cryptographic keys.
+acdbackup uses a very simple algorithm to achieve encrypted and deduplicated backups.  The resulting backups are completely obscured from prying eyes at Amazon or an inadvertent hack of your Amazon Cloud Drive credentials.  All data and metadata is encrypted before it is uploaded.  Digest collisions use a secret key to prevent identical files resulting in identical dedup collisions.
+
+**The first thing to note is that acdbackup uses three distinct cryptographic keys.**
  1. Deduplication key, used to calculate deduplication collisions
  1. Data Encryption key, used to encrypt physical files
  1. Metadata key, used to encrypt resulting backup metadata
 
-The backup process is as follows.
+**The backup process is as follows.**
  1. Open file
     1. Open file and calculate HMAC-SHA256 digest using deduplication key
     1. Determine if digest exists in the data directory on Amazon Cloud Drive; if it exists skip compress, encrypt and upload phases
