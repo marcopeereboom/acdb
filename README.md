@@ -109,7 +109,7 @@ acdbackup uses a very simple algorithm to achieve encrypted and deduplicated bac
  1. Open file
     1. Open file and calculate HMAC-SHA256 digest using deduplication key
     1. Determine if digest exists in the data directory on Amazon Cloud Drive; if it exists skip compress, encrypt and upload phases
-    1. Compress file if MIME type is not marked as incompressible
+    1. Compress file if MIME type is not marked as incompressible (e.g. not jpeg or mp3 etc.)
     1. Encrypt (compressed) file using encryption key
     1. Upload encrypted file to the data directory on Amazon Cloud Drive
  2. Record file digest and permissions, etc. in backup metadata file
